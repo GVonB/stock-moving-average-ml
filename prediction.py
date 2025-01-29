@@ -8,5 +8,8 @@ import numpy as np
 def get_stock_data(ticker, days=150):
     return yf.download(ticker, period=f'{days}d')
 
+# Test case
+ticker = "AAPL"
+stock_data = get_stock_data(ticker)
 
-print(get_stock_data("AAPL"))
+print(stock_data)
