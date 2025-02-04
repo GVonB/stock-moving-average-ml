@@ -116,7 +116,7 @@ if 'Close' in stock_data.columns and ticker in stock_data['Close']:
 else:
     current_price = "N/A"
 
-## Predict when the 150-day moving average will hit target
+# Predict when the 150-day moving average will hit target
 days_needed, error_message = predict_ma_hit(stock_data, 150, ma_target)
 
 table_data = [
