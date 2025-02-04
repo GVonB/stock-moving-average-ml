@@ -5,6 +5,11 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 import sys  # For command line arguments
 
+# Check if a given ticker symbol is valid
+def check_valid_ticker(ticker):
+    stock = yf.Ticker(ticker)
+    return bool(stock.info)
+
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
     return yf.download(ticker, period=f'{days}d')
@@ -47,6 +52,9 @@ if argv_length != 3:
         print(f"{argv_length} arguments were passed instead of the required 3.")
     print("Please use the format when running the program:\npython3 ticker_symbol ma_target\n")
     exit(1)
+
+# argv_length must equal 3 here:
+
 
 
 # Test case
