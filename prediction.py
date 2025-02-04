@@ -30,7 +30,7 @@ def check_valid_target(ma_target):
 
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
-    return yf.download(ticker, period=f'{days}d')
+    return yf.download(ticker, period=f'{days}d', progress=False)
 
 # Calculates moving average
 def calculate_moving_averages(data, window):
