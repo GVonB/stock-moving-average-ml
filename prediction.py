@@ -72,7 +72,11 @@ def predict_ma_hit(data, ma_window, ma_target):
 
     # Predict when MA hits target
     days_needed = (ma_target - intercept) / coef
-    return round(days_needed, 2), None if days_needed > 0 else "Target will not be reached based on current trend."
+
+    if days_needed < 0:
+        return None, f"The 150-day moving average has already been below ${ma_target:.2f}. Consider adjusting your target."
+
+    return round(days_needed, 2), None
 
 # Handle incorrect number of command line arguments
 if len(sys.argv) < 3:
