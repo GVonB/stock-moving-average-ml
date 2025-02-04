@@ -53,7 +53,7 @@ def predict_ma_hit(data, ma_window, ma_target):
 argv_length = len(sys.argv)
 
 # Handle incorrect number of command line arguments
-if argv_length != 3:
+if argv_length < 3:
     if argv_length == 1:
         print("Only 1 argument was passed instead of the required 3.")
     else:   
@@ -66,7 +66,10 @@ ticker = sys.argv[1]
 if not check_valid_ticker(ticker):
     exit("Invalid stock ticker.")
 
+# Check for valid ma_target
+ma_target = sys.argv[2]
 
+# Retrieve stock data from Yahoo Finance
 stock_data = get_stock_data(ticker)
 
 # Calculate moving averages
