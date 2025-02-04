@@ -5,6 +5,15 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 import sys  # For command line arguments
 
+# ANSI color codes for better output
+class Colors:
+    BOLD = "\033[1m"
+    GREEN = "\033[92m"
+    RED = "\033[91m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    RESET = "\033[0m"
+
 # Check if a given ticker symbol is valid
 def check_valid_ticker(ticker):
     try:
@@ -63,16 +72,10 @@ def predict_ma_hit(data, ma_window, ma_target):
     days_needed = float((ma_target - intercept) / coef)
     return f"In approximately {days_needed:.2f} days." if days_needed > 0 else "Target will not be reached based on current trend."
 
-# Check for additional command line arguments
-argv_length = len(sys.argv)
-
 # Handle incorrect number of command line arguments
-if argv_length < 3:
-    if argv_length == 1:
-        print("Only 1 argument was passed instead of the required 3.")
-    else:   
-        print(f"{argv_length} arguments were passed instead of the required 3.")
-    print("Please use the format when running the program:\npython3 ticker_symbol ma_target\n")
+if len(sys.argv) < 3:
+    print(f"{Colors.RED}Error: Missing arguments!{Colors.RESET}")
+    print("Usage: python3 prediction.py <ticker> <target_moving_average>")
     exit(1)
 
 # Validate this format: python3 ticker_symbol ma_target
