@@ -5,6 +5,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 import sys
 import time
+from tabulate import tabulate
 
 # ANSI color codes for better output
 class Colors:
@@ -93,9 +94,10 @@ if not check_valid_target(ma_target):
     exit(1)
 
 ma_target = float(ma_target)
+
 # Simulated progress effect
 print(f"{Colors.YELLOW}Fetching stock data for {ticker}...{Colors.RESET}")
-time.sleep(1)  # Simulating loading time
+time.sleep(1)
 
 # Retrieve stock data from Yahoo Finance
 stock_data = get_stock_data(ticker)
@@ -104,8 +106,10 @@ stock_data = get_stock_data(ticker)
 stock_data['150_MA'] = calculate_moving_averages(stock_data, 150)
 stock_data['50_MA'] = calculate_moving_averages(stock_data, 50)
 
+# Get current stock price
+current_price = stock_data['Close'].iloc[-1] if not stock_data['Close'].isnull().all() else "N/A"
+
 # Predict when the 150-day moving average will hit target
-ma_target = 145
 prediction = predict_ma_hit(stock_data, 150, ma_target)
 
 print(prediction)
