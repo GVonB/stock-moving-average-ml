@@ -53,12 +53,11 @@ if argv_length != 3:
     print("Please use the format when running the program:\npython3 ticker_symbol ma_target\n")
     exit(1)
 
-# argv_length must equal 3 here:
+# Validate this format: python3 ticker_symbol ma_target
+ticker = sys.argv[1]
+print(check_valid_ticker(ticker))
 
 
-
-# Test case
-ticker = "NVDA"
 stock_data = get_stock_data(ticker)
 
 # Calculate moving averages
