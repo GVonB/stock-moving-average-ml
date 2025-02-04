@@ -3,6 +3,7 @@ import pandas as pd
 import yfinance as yf
 from sklearn.linear_model import LinearRegression
 import numpy as np
+import sys  # For command line arguments
 
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
@@ -34,6 +35,17 @@ def predict_ma_hit(data, ma_window, ma_target):
     # Predict when MA hits target
     days_needed = float((ma_target - model.intercept_) / model.coef_[0])
     return f"In approximately {days_needed:.2f} days." if days_needed > 0 else "Target will not be reached based on current trend."
+
+# Check for additional command line arguments
+argv_length = len(sys.argv)
+
+if argv_length != 3:
+    if argv_length == 1:
+        print("Only 1 argument was passed instead of the required 3.")
+    else:   
+        print(f"{argv_length} arguments were passed instead of the required 3.")
+    print("Please use the format when running the program:\npython3 ticker_symbol ma_target\n")
+    exit(1)
 
 
 # Test case
