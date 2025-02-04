@@ -17,6 +17,12 @@ def check_valid_ticker(ticker):
     except Exception as e:
         print(f"Error checking ticker {ticker}: {e}")
         return False
+    
+# Check if moving average target is positive
+# Currently this is defined in its own method in case
+# of future improvements.
+def check_valid_target(ma_target):
+    return ma_target < 0
 
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
@@ -68,6 +74,8 @@ if not check_valid_ticker(ticker):
 
 # Check for valid ma_target
 ma_target = sys.argv[2]
+if not check_valid_target(ma_target):
+    exit("Invalid moving average target. Must be a positive value.")
 
 # Retrieve stock data from Yahoo Finance
 stock_data = get_stock_data(ticker)
