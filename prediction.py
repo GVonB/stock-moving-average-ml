@@ -23,7 +23,7 @@ def check_valid_ticker(ticker):
 # of future improvements.
 def check_valid_target(ma_target):
     try:
-        float(ma_target)
+        ma_target = float(ma_target)
         return ma_target >= 0
     except ValueError:
         return False
