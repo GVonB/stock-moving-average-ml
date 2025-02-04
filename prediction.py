@@ -88,7 +88,8 @@ if not check_valid_ticker(ticker):
 # Check for valid ma_target
 ma_target = sys.argv[2]
 if not check_valid_target(ma_target):
-    exit("Invalid moving average target. Must be a positive value.")
+    print(f"{Colors.RED}Invalid moving average target. Must be a positive value.{Colors.RESET}")
+    exit(1)
 
 # Retrieve stock data from Yahoo Finance
 stock_data = get_stock_data(ticker)
