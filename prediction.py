@@ -3,7 +3,8 @@ import pandas as pd
 import yfinance as yf
 from sklearn.linear_model import LinearRegression
 import numpy as np
-import sys  # For command line arguments
+import sys
+import time
 
 # ANSI color codes for better output
 class Colors:
@@ -90,6 +91,11 @@ ma_target = sys.argv[2]
 if not check_valid_target(ma_target):
     print(f"{Colors.RED}Invalid moving average target. Must be a positive value.{Colors.RESET}")
     exit(1)
+
+ma_target = float(ma_target)
+# Simulated progress effect
+print(f"{Colors.YELLOW}Fetching stock data for {ticker}...{Colors.RESET}")
+time.sleep(1)  # Simulating loading time
 
 # Retrieve stock data from Yahoo Finance
 stock_data = get_stock_data(ticker)
