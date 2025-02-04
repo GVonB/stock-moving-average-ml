@@ -53,7 +53,7 @@ def predict_ma_hit(data, ma_window, ma_target):
     ma_recent = ma.dropna().values  # Drop NaNs for regression
     
     if len(ma_recent) < 10:  # Ensure enough data points
-        return "Not enough data for a reliable prediction."
+        return None, "Not enough data for a reliable prediction."
     
     x = np.arange(len(ma_recent)).reshape(-1, 1)  # Days as features
     y = ma_recent
@@ -63,16 +63,16 @@ def predict_ma_hit(data, ma_window, ma_target):
     model.fit(x, y)
 
     # Avoid division by zero (flat moving average)
-    if abs(model.coef_[0]) < 1e-5:
-        return "No significant trend detected, unable to predict crossover."
+    if abs(model.coef_[0][0]) < 1e-5:
+        return None, "No significant trend detected, unable to predict crossover."
     
     # Extract scalars
     intercept = model.intercept_[0]
     coef = model.coef_[0][0]
 
     # Predict when MA hits target
-    days_needed = float((ma_target - intercept) / coef)
-    return f"In approximately {days_needed:.2f} days." if days_needed > 0 else "Target will not be reached based on current trend."
+    days_needed = (ma_target - intercept) / coef
+    return round(days_needed, 2), None if days_needed > 0 else "Target will not be reached based on current trend."
 
 # Handle incorrect number of command line arguments
 if len(sys.argv) < 3:
@@ -109,7 +109,7 @@ stock_data['50_MA'] = calculate_moving_averages(stock_data, 50)
 # Get current stock price
 current_price = stock_data['Close'].iloc[-1] if not stock_data['Close'].isnull().all() else "N/A"
 
-# Predict when the 150-day moving average will hit target
-prediction = predict_ma_hit(stock_data, 150, ma_target)
+## Predict when the 150-day moving average will hit target
+days_needed, error_message = predict_ma_hit(stock_data, 150, ma_target)
 
 print(prediction)
