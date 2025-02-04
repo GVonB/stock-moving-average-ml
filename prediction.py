@@ -107,9 +107,25 @@ stock_data['150_MA'] = calculate_moving_averages(stock_data, 150)
 stock_data['50_MA'] = calculate_moving_averages(stock_data, 50)
 
 # Get current stock price
-current_price = stock_data['Close'].iloc[-1] if not stock_data['Close'].isnull().all() else "N/A"
+if not stock_data['Close'].isnull().all().item():  # Convert boolean Series to scalar
+    current_price = stock_data['Close'].iloc[-1]
+else:
+    current_price = "N/A"
 
 ## Predict when the 150-day moving average will hit target
 days_needed, error_message = predict_ma_hit(stock_data, 150, ma_target)
 
-print(prediction)
+table_data = [
+    ["Stock Ticker", ticker],
+    ["Current Price", f"${current_price:,.2f}" if isinstance(current_price, (int, float)) else "N/A"],
+    ["Target Moving Average", f"${ma_target:,.2f}"],
+    ["Projected Days Until Target", f"{Colors.GREEN}{days_needed} days{Colors.RESET}" if days_needed else f"{Colors.RED}{error_message}{Colors.RESET}"]
+]
+
+print(f"{Colors.BOLD}\n📊 Stock Analysis for {ticker}{Colors.RESET}")
+print(tabulate(table_data, tablefmt="fancy_grid"))
+
+if days_needed:
+    print(f"\n{Colors.BLUE}🚀 Based on current trends, {ticker} is expected to hit ${ma_target} in approximately {days_needed} days!{Colors.RESET}")
+else:
+    print(f"\n{Colors.RED}⚠️ {error_message}{Colors.RESET}")
