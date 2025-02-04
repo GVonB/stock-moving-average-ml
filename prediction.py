@@ -39,6 +39,7 @@ def predict_ma_hit(data, ma_window, ma_target):
 # Check for additional command line arguments
 argv_length = len(sys.argv)
 
+# Handle incorrect number of command line arguments
 if argv_length != 3:
     if argv_length == 1:
         print("Only 1 argument was passed instead of the required 3.")
