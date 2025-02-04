@@ -22,7 +22,11 @@ def check_valid_ticker(ticker):
 # Currently this is defined in its own method in case
 # of future improvements.
 def check_valid_target(ma_target):
-    return ma_target < 0
+    try:
+        float(ma_target)
+        return ma_target >= 0
+    except ValueError:
+        return False
 
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
