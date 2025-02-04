@@ -81,7 +81,9 @@ if len(sys.argv) < 3:
 # Validate this format: python3 ticker_symbol ma_target
 ticker = sys.argv[1]
 if not check_valid_ticker(ticker):
-    exit("Invalid stock ticker.")
+    print(f"{Colors.RED}Invalid stock ticker: {ticker}{Colors.RESET}")
+    exit(1)
+
 
 # Check for valid ma_target
 ma_target = sys.argv[2]
