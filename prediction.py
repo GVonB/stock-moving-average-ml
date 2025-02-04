@@ -54,9 +54,13 @@ def predict_ma_hit(data, ma_window, ma_target):
     # Avoid division by zero (flat moving average)
     if abs(model.coef_[0]) < 1e-5:
         return "No significant trend detected, unable to predict crossover."
+    
+    # Extract scalars
+    intercept = model.intercept_[0]
+    coef = model.coef_[0][0]
 
     # Predict when MA hits target
-    days_needed = float((ma_target - model.intercept_) / model.coef_[0])
+    days_needed = float((ma_target - intercept) / coef)
     return f"In approximately {days_needed:.2f} days." if days_needed > 0 else "Target will not be reached based on current trend."
 
 # Check for additional command line arguments
