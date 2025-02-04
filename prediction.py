@@ -7,8 +7,16 @@ import sys  # For command line arguments
 
 # Check if a given ticker symbol is valid
 def check_valid_ticker(ticker):
-    stock = yf.Ticker(ticker)
-    return bool(stock.info)
+    try:
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period="1d")
+
+        if hist.empty:
+            return False
+        return True
+    except Exception as e:
+        print(f"Error checking ticker {ticker}: {e}")
+        return False
 
 # Retrieves stock data over a specified time
 def get_stock_data(ticker, days=300):
@@ -55,7 +63,8 @@ if argv_length != 3:
 
 # Validate this format: python3 ticker_symbol ma_target
 ticker = sys.argv[1]
-print(check_valid_ticker(ticker))
+if not check_valid_ticker(ticker):
+    exit("Invalid stock ticker.")
 
 
 stock_data = get_stock_data(ticker)
