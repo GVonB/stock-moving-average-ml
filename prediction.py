@@ -110,9 +110,9 @@ stock_data = get_stock_data(ticker)
 stock_data['150_MA'] = calculate_moving_averages(stock_data, 150)
 stock_data['50_MA'] = calculate_moving_averages(stock_data, 50)
 
-# Get current stock price
-if not stock_data['Close'].isnull().all().item():  # Convert boolean Series to scalar
-    current_price = stock_data['Close'].iloc[-1]
+# Check if Close column exists and extract price correctly for multi-index data
+if 'Close' in stock_data.columns and ticker in stock_data['Close']:
+    current_price = stock_data['Close'][ticker].dropna().iloc[-1]  # Get most recent valid closing price
 else:
     current_price = "N/A"
 
