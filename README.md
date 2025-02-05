@@ -91,6 +91,7 @@ pip install --upgrade -r requirements.txt
 
 ### 3️⃣ Can I predict other moving averages?
 Currently, the script is set to **150-day MA**, but you can modify `predict_ma_hit()` to use **custom time frames**.
+The necessary format is shown in the **50-day MA**, which is currently calculated but unused.
 
 ---
 
