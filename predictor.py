@@ -1,4 +1,4 @@
-import pandas as py
+import pandas as pd
 import yfinance as yf
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -21,32 +21,32 @@ def get_stock_data(ticker, days=300):
 def calculate_moving_averages(data, window):
     return data['Close'].rolling(window=window).mean()
 
-def predict_ma_hit(data, ma_window, ma_target):
-    ma = calculate_moving_averages(data, ma_window)
-    ma_recent = ma.dropna().values  # Drop NaNs for regression
-    
-    if len(ma_recent) < 10:  # Ensure enough data points
-        return None, "Not enough data for a reliable prediction."
-    
-    x = np.arange(len(ma_recent)).reshape(-1, 1)  # Days as features
+def predict_ma_projection(data, ma_window, ma_target, days_forward=30):
+    """
+    Predict future moving average values based on a linear regression.
+    Returns:
+        days_needed: Number of days until the MA hits the target.
+        projection_df: DataFrame with future dates and predicted MA values.
+        error: Error message if something goes wrong.
+    """
+    ma = data['Close'].rolling(window=ma_window).mean()
+    ma_recent = ma.dropna().values
+    if len(ma_recent) < 10:
+        return None, None, "Not enough data for a reliable prediction."
+    x = np.arange(len(ma_recent)).reshape(-1, 1)
     y = ma_recent
-
-    # Train linear regression to predict MA trend
     model = LinearRegression()
     model.fit(x, y)
-
-    # Avoid division by zero (flat moving average)
     if abs(model.coef_[0][0]) < 1e-5:
-        return None, "No significant trend detected, unable to predict crossover."
-    
-    # Extract scalars
+        return None, None, "No significant trend detected, unable to predict crossover."
     intercept = model.intercept_[0]
     coef = model.coef_[0][0]
-
-    # Predict when MA hits target
     days_needed = (ma_target - intercept) / coef
-
     if days_needed < 0:
-        return None, f"The 150-day moving average has already been below ${ma_target:.2f}. Consider adjusting your target."
-
-    return round(days_needed, 2), None
+        return None, None, f"The {ma_window}-day moving average is already below ${ma_target:.2f}."
+    last_day_index = len(ma_recent) - 1
+    future_indexes = np.arange(last_day_index + 1, last_day_index + 1 + days_forward).reshape(-1, 1)
+    future_ma = model.predict(future_indexes)
+    future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=days_forward)
+    projection_df = pd.DataFrame({'Date': future_dates, 'Predicted_MA': future_ma})
+    return round(days_needed, 2), projection_df, None
