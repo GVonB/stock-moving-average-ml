@@ -1,7 +1,7 @@
 import sys
 import time
 from tabulate import tabulate
-from predictor import check_valid_ticker, get_stock_data, calculate_moving_averages, predict_ma_hit
+from predictor import check_valid_ticker, get_stock_data, calculate_moving_averages, predict_ma_projection
 
 # ANSI color codes for output
 class Colors:
@@ -43,7 +43,8 @@ if 'Close' in stock_data.columns and ticker in stock_data['Close']:
 else:
     current_price = "N/A"
 
-days_needed, error_message = predict_ma_hit(stock_data, 150, ma_target)
+ma_window = 150
+days_needed, projection_df, error_message = predict_ma_projection(stock_data, ma_window, ma_target, days_forward=30)
 
 table_data = [
     ["Stock Ticker", ticker],

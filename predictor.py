@@ -41,7 +41,7 @@ def predict_ma_projection(data, ma_window, ma_target, days_forward=30):
     intercept = model.intercept_
     coef = model.coef_[0]
     
-    days_needed = (ma_target - intercept) / coef
+    days_needed = float((ma_target - intercept) / coef)
     if days_needed < 0:
         return None, None, f"The {ma_window}-day moving average is already below ${ma_target:.2f}."
     
