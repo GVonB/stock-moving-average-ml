@@ -9,7 +9,7 @@ from predictor import predict_ma_projection  # and any others you need
 
 app = Dash(__name__)
 
-default_ticker = 'GOOG'
+default_ticker = 'NVDA'
 start_date = (datetime.today() - timedelta(days=300)).strftime('%Y-%m-%d')
 end_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -44,30 +44,27 @@ def update_chart(n_clicks, ticker):
         if data.empty:
             return {}, f"No data found for ticker '{ticker}'. Try another symbol."
         
-        # Create candlestick chart
-        fig = go.Figure(data=[go.Candlestick(
-            x=data.index,
-            open=data['Open'],
-            high=data['High'],
-            low=data['Low'],
-            close=data['Close']
-        )])
+        # Flatten columns if they are multi-indexed
+        if isinstance(data.columns, pd.MultiIndex):
+            data.columns = data.columns.droplevel(1)
         
-        fig.update_layout(
-            title=f"{ticker.upper()} Stock Price Candlesticks",
-            xaxis_title="Date",
-            yaxis_title="Price (USD)"
-        )
-        
+        # Define parameters for moving average projection
         ma_window = 150
-        ma_target = 200  # TODO - Handle as user input
-        days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, days_forward=30)
-        
+        ma_target = 200  # Example target; adjust as needed
+        days_forward = 30
+
+        # Get projection data
+        days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, days_forward)
         if error:
             status = error
         else:
             status = f"Projected to hit target in {days_needed} days."
-            # Add projection trace to the chart
+
+        # Create a blank figure
+        fig = go.Figure()
+
+        # Add projection trace if available
+        if projection_df is not None and not projection_df.empty:
             fig.add_trace(
                 go.Scatter(
                     x=projection_df['Date'],
@@ -77,10 +74,44 @@ def update_chart(n_clicks, ticker):
                     line=dict(color='orange', dash='dash')
                 )
             )
+
+        # Add candlestick trace with explicit styling
+        candlestick_trace = go.Candlestick(
+            x=data.index,
+            open=data['Open'],
+            high=data['High'],
+            low=data['Low'],
+            close=data['Close'],
+            name='Historical',
+            increasing=dict(line=dict(color='green')),
+            decreasing=dict(line=dict(color='red'))
+        )
+        fig.add_trace(candlestick_trace)
+
+        # Update layout and axes
+        fig.update_layout(
+            title=f"{ticker.upper()} Stock Price Candlesticks",
+            xaxis_title="Date",
+            yaxis_title="Price (USD)"
+        )
+        fig.update_xaxes(type='date')
+
+        # Optionally update the y-axis range based on both traces
+        y_min_hist = data['Low'].min().item()
+        y_max_hist = data['High'].max().item()
+        if projection_df is not None and not projection_df.empty:
+            y_min_proj = projection_df['Predicted_MA'].min()
+            y_max_proj = projection_df['Predicted_MA'].max()
+            y_min = min(y_min_hist, y_min_proj) * 0.95
+            y_max = max(y_max_hist, y_max_proj) * 1.05
+        else:
+            y_min = y_min_hist * 0.95
+            y_max = y_max_hist * 1.05
+        fig.update_yaxes(range=[y_min, y_max])
         
         return fig, status
     except Exception as e:
         return {}, f"Error fetching data or predicting: {e}"
-
+    
 if __name__ == '__main__':
     app.run_server(debug=True)

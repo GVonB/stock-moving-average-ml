@@ -23,7 +23,8 @@ def calculate_moving_averages(data, window):
 
 def predict_ma_projection(data, ma_window, ma_target, days_forward=30):
     ma = data['Close'].rolling(window=ma_window).mean()
-    ma_recent = ma.dropna().values
+    ma_recent = ma.dropna().values  # Drop NaNs
+    
     if len(ma_recent) < 10:
         return None, None, "Not enough data for a reliable prediction."
     
@@ -33,11 +34,12 @@ def predict_ma_projection(data, ma_window, ma_target, days_forward=30):
     model = LinearRegression()
     model.fit(x, y)
     
-    if abs(model.coef_[0][0]) < 1e-5:
+    # Use correct indexing for 1D arrays
+    if abs(model.coef_[0]) < 1e-5:
         return None, None, "No significant trend detected, unable to predict crossover."
     
-    intercept = model.intercept_[0]
-    coef = model.coef_[0][0]
+    intercept = model.intercept_
+    coef = model.coef_[0]
     
     days_needed = (ma_target - intercept) / coef
     if days_needed < 0:
@@ -46,7 +48,7 @@ def predict_ma_projection(data, ma_window, ma_target, days_forward=30):
     last_day_index = len(ma_recent) - 1
     future_indexes = np.arange(last_day_index + 1, last_day_index + 1 + days_forward).reshape(-1, 1)
     future_ma = model.predict(future_indexes)
-    future_ma = future_ma.flatten()  # Flatten the array to 1D
+    future_ma = future_ma.flatten()  # Ensure it's 1D
     
     future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=days_forward)
     projection_df = pd.DataFrame({'Date': future_dates, 'Predicted_MA': future_ma})
