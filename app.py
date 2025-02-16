@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import yfinance as yf
 from datetime import datetime, timedelta
 import pandas as pd
-from predictor import predict_ma_projection  # and any others you need
+from predictor import predict_ma_projection
 
 app = Dash(__name__)
 
@@ -15,9 +15,9 @@ start_date = (datetime.today() - timedelta(days=300)).strftime('%Y-%m-%d')
 end_date = datetime.today().strftime('%Y-%m-%d')
 
 app.layout = html.Div([
-    html.H1("Stock Price Candlestick Chart with MA Projection"),
+    html.H1("Stock Price Moving Average Linear Regression Projection"),
     html.Div([
-        html.Label("Enter Stock Ticker:"),
+        html.Label("Stock Ticker:"),
         dcc.Input(
             id='ticker-input',
             type='text',
@@ -25,7 +25,7 @@ app.layout = html.Div([
             debounce=True
         ),
         html.Br(),
-        html.Label("Enter Target Moving Average:"),
+        html.Label("Target Moving Average:"),
         dcc.Input(
             id='ma-target-input',
             type='number',
@@ -100,7 +100,7 @@ def update_chart(n_clicks, ticker, ma_target):
 
         # Update layout and axes
         fig.update_layout(
-            title=f"{ticker.upper()} Stock Price Candlesticks",
+            title=f"{ticker.upper()} Stock Price Over Time",
             xaxis_title="Date",
             yaxis_title="Price (USD)"
         )
