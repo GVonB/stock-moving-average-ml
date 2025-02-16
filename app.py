@@ -10,6 +10,7 @@ from predictor import predict_ma_projection  # and any others you need
 app = Dash(__name__)
 
 default_ticker = 'NVDA'
+default_ma_target = 150
 start_date = (datetime.today() - timedelta(days=300)).strftime('%Y-%m-%d')
 end_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -23,6 +24,15 @@ app.layout = html.Div([
             value=default_ticker,
             debounce=True
         ),
+        html.Br(),
+        html.Label("Enter Target Moving Average:"),
+        dcc.Input(
+            id='ma-target-input',
+            type='number',
+            value=default_ma_target,
+            debounce=True
+        ),
+        html.Br(),
         html.Button('Submit', id='submit-button', n_clicks=0)
     ]),
     dcc.Graph(id='candlestick-chart'),
@@ -33,9 +43,10 @@ app.layout = html.Div([
     [Output('candlestick-chart', 'figure'),
      Output('status-message', 'children')],
     [Input('submit-button', 'n_clicks')],
-    [State('ticker-input', 'value')]
+    [State('ticker-input', 'value'),
+     State('ma-target-input', 'value')]
 )
-def update_chart(n_clicks, ticker):
+def update_chart(n_clicks, ticker, ma_target):
     if not ticker:
         return {}, "Please enter a valid ticker symbol."
     
@@ -50,7 +61,6 @@ def update_chart(n_clicks, ticker):
         
         # Define parameters for moving average projection
         ma_window = 150
-        ma_target = 200  # Example target; adjust as needed
         days_forward = 30
 
         # Get projection data
