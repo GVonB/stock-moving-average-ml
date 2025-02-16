@@ -1,6 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, State
 import plotly.graph_objects as go
 import yfinance as yf
+import pandas as pd
 from datetime import datetime, timedelta
 
 # Initialize the Dash app
@@ -39,11 +40,18 @@ app.layout = html.Div([
     [State('ticker-input', 'value')]
 )
 def update_chart(n_clicks, ticker):
+    print("Ticker received:", ticker)
     if not ticker:
         return {}, "Please enter a valid ticker symbol."
     
     try:
         data = yf.download(ticker, start=start_date, end=end_date)
+        if isinstance(data.columns, pd.MultiIndex):
+            data.columns = data.columns.droplevel(1)  # remove the second level (e.g., 'GOOG')
+
+        print("Data fetched, number of rows:", len(data))
+        print("Minimum Low:", data['Low'].min())
+        print("Maximum High:", data['High'].max())
         if data.empty:
             return {}, f"No data found for ticker '{ticker}'. Try another symbol."
         
