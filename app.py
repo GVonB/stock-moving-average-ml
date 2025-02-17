@@ -86,9 +86,9 @@ def update_chart(n_clicks, ticker, ma_target):
             days_forward = default_days_forward
 
         if error:
-            status = error
+            status_component = dbc.Alert(error, color="danger", className="mt-3")
         else:
-            status = f"Projected to hit target in {days_needed} days."
+            status_component = dbc.Alert(f"Projected to hit target in {days_needed} days.", color="info", className="mt-3")
 
         # Create a blank figure
         fig = go.Figure()
@@ -143,7 +143,7 @@ def update_chart(n_clicks, ticker, ma_target):
             y_max = y_max_hist * 1.05
         fig.update_yaxes(range=[y_min, y_max])
         
-        return fig, status
+        return fig, status_component
     except Exception as e:
         return {}, f"Error fetching data or predicting: {e}"
     
