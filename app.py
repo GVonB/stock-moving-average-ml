@@ -61,14 +61,17 @@ def update_chart(n_clicks, ticker, ma_target):
         
         # Define parameters for moving average projection
         ma_window = 150
-        days_forward = 30
+        default_days_forward = 30
 
         # Get projection data
-        days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, days_forward)
-        if error:
+        days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, default_days_forward)
+
+        if days_needed is not None and days_needed > default_days_forward:
+            days_forward = int(round(days_needed))
+            days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, days_forward)
             status = error
         else:
-            status = f"Projected to hit target in {days_needed} days."
+            days_forward = default_days_forward
 
         # Create a blank figure
         fig = go.Figure()
