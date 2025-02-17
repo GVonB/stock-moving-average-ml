@@ -17,7 +17,10 @@ end_date = datetime.today().strftime('%Y-%m-%d')
 
 app.layout = dbc.Container([
     dbc.Row(
-        dbc.Col(html.H1("Stock Price Moving Average Projection", className="text-center text-white"), width=12)
+        dbc.Col(
+            html.H1("Stock Price Moving Average Projection", className="mt-3 text-center text-white"), 
+            width=12
+        )
     ),
     dbc.Row([
         dbc.Col([
@@ -30,13 +33,22 @@ app.layout = dbc.Container([
         ], width=6)
     ], className="my-3"),
     dbc.Row(
-        dbc.Col(dbc.Button("Submit", id="submit-button", color="primary", className="w-100"), width=12)
+        dbc.Col(
+            dbc.Button("Submit", id="submit-button", color="primary", className="mb-3 w-100"),
+            width=12
+        )
     ),
     dbc.Row(
-        dbc.Col(dcc.Graph(id="candlestick-chart"), width=12)
+        dbc.Col(
+            dcc.Graph(id="candlestick-chart"),
+            width=12
+        )
     ),
     dbc.Row(
-        dbc.Col(html.Div(id="status-message", className="text-center text-danger my-2"), width=12)
+        dbc.Col(
+            html.Div(id="status-message", className="text-center text-danger my-2"),
+            width=12
+        )
     )
 ], fluid=True)
 
