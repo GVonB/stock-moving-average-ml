@@ -100,6 +100,10 @@ def update_chart(n_clicks, ticker, ma_target):
 
         # Update layout and axes
         fig.update_layout(
+            template='plotly_dark',
+            paper_bgcolor='#121212',
+            plot_bgcolor='#121212',
+            font_color='white',
             title=f"{ticker.upper()} Stock Price Over Time",
             xaxis_title="Date",
             yaxis_title="Price (USD)"
