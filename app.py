@@ -69,9 +69,13 @@ def update_chart(n_clicks, ticker, ma_target):
         if days_needed is not None and days_needed > default_days_forward:
             days_forward = int(round(days_needed))
             days_needed, projection_df, error = predict_ma_projection(data, ma_window, ma_target, days_forward)
-            status = error
         else:
             days_forward = default_days_forward
+
+        if error:
+            status = error
+        else:
+            status = f"Projected to hit target in {days_needed} days."
 
         # Create a blank figure
         fig = go.Figure()
