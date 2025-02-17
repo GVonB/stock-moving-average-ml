@@ -1,43 +1,44 @@
 # app.py
 import dash
 from dash import Dash, dcc, html, Input, Output, State
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import yfinance as yf
 from datetime import datetime, timedelta
 import pandas as pd
 from predictor import predict_ma_projection
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
 default_ticker = 'NVDA'
 default_ma_target = 150
 start_date = (datetime.today() - timedelta(days=300)).strftime('%Y-%m-%d')
 end_date = datetime.today().strftime('%Y-%m-%d')
 
-app.layout = html.Div([
-    html.H1("Stock Price Moving Average Linear Regression Projection"),
-    html.Div([
-        html.Label("Stock Ticker:"),
-        dcc.Input(
-            id='ticker-input',
-            type='text',
-            value=default_ticker,
-            debounce=True
-        ),
-        html.Br(),
-        html.Label("Target Moving Average:"),
-        dcc.Input(
-            id='ma-target-input',
-            type='number',
-            value=default_ma_target,
-            debounce=True
-        ),
-        html.Br(),
-        html.Button('Submit', id='submit-button', n_clicks=0)
-    ]),
-    dcc.Graph(id='candlestick-chart'),
-    html.Div(id='status-message', style={'color': 'red'})
-])
+app.layout = dbc.Container([
+    dbc.Row(
+        dbc.Col(html.H1("Stock Price Moving Average Projection", className="text-center text-white"), width=12)
+    ),
+    dbc.Row([
+        dbc.Col([
+            dbc.Label("Stock Ticker:", className="text-white"),
+            dbc.Input(id="ticker-input", type="text", value=default_ticker)
+        ], width=6),
+        dbc.Col([
+            dbc.Label("Target Moving Average:", className="text-white"),
+            dbc.Input(id="ma-target-input", type="number", value=default_ma_target)
+        ], width=6)
+    ], className="my-3"),
+    dbc.Row(
+        dbc.Col(dbc.Button("Submit", id="submit-button", color="primary", className="w-100"), width=12)
+    ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id="candlestick-chart"), width=12)
+    ),
+    dbc.Row(
+        dbc.Col(html.Div(id="status-message", className="text-center text-danger my-2"), width=12)
+    )
+], fluid=True)
 
 @app.callback(
     [Output('candlestick-chart', 'figure'),
