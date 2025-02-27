@@ -1,5 +1,7 @@
 # 📈 Stock Moving Average Prediction Tool
 
+Live demo: [stock-ml.gvonb.dev](https://stock-ml.gvonb.dev)
+
 ## 🔍 Overview
 This Python script predicts when a stock's **150-day moving average** will reach a given target price using **linear regression**. It fetches historical stock data via `yfinance`, performs calculations, and presents the results in a clean, easy-to-read table format.
 
