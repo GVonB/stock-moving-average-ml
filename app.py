@@ -52,7 +52,7 @@ app.layout = dbc.Container([
             width=12
         )
     )
-], fluid=True)
+], fluid=False)
 
 @app.callback(
     [Output('candlestick-chart', 'figure'),
