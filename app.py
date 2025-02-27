@@ -9,6 +9,7 @@ import pandas as pd
 from predictor import predict_ma_projection
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
+app.title = "Stock Moving Average Analysis"
 server = app.server
 
 default_ticker = 'NVDA'
