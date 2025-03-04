@@ -1,0 +1,13 @@
+body {
+    background-color: #121212;
+    color: white;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.custom-title {
+    font-size: 2rem; /* adjust as desired */
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}

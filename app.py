@@ -20,7 +20,7 @@ end_date = datetime.today().strftime('%Y-%m-%d')
 app.layout = dbc.Container([
     dbc.Row(
         dbc.Col(
-            html.H1("Stock Price Moving Average Projection", className="mt-3 text-center text-white"), 
+            html.H1("Stock Price Moving Average Projection", className="custom-title mt-3 text-center text-white"), 
             width=12
         )
     ),
